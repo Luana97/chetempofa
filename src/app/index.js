@@ -51,21 +51,16 @@ function getGeolocation() {
     function success(position) {
         latitude = position.coords.latitude;
         longitude = position.coords.longitude;
+        
+        var url = "https://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude + "&appid=" + apiKey + "&units=metric&lang=it"
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                geo.updateGeoData(data)
+            });
     
-        var req = new XMLHttpRequest();
-            var url = "https://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude + "&appid=" + apiKey + "&units=metric&lang=it"
-            req.onreadystatechange = function (data) {
-                if (req.readyState == 4 && req.status == 200) {
-                    var data = JSON.parse(req.responseText);
-                    geo.updateGeoData(data)
-                } else {
-                    console.log(req.status);
-                }
-            }
-
-            req.open("GET", url);
-            req.send();
-
     }
 
     function error() {
