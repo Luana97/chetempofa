@@ -41,28 +41,35 @@ button2.addEventListener('click', () => {
 });
 
 function getGeolocation() {
-	let content = document.getElementById("content");
-	  
-	let apiKey = process.env.API_KEY;
+    var content = document.getElementById("content");
+      
+    var apiKey = process.env.API_KEY;
     
-	navigator.geolocation.getCurrentPosition(success, error);
+    navigator.geolocation.getCurrentPosition(success, error);
     
-	function success(position) {
+    
+    function success(position) {
         latitude = position.coords.latitude;
         longitude = position.coords.longitude;
-        let api = "https://api.openweathermap.org/data/2.5/weather";
-  
-	  let url = api + "?lat=" + latitude + "&lon=" + longitude + "&appid=" + apiKey + "&units=metric&lang=it";
-  
-	  fetch(url)
-		.then(response => response.json())
-		.then(data => {
-            geo.updateGeoData(data)		  
-		});
-	}
-  
+    
+        var req = new XMLHttpRequest();
+            var url = "https://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude + "&appid=" + apiKey + "&units=metric&lang=it"
+            req.onreadystatechange = function (data) {
+                if (req.readyState == 4 && req.status == 200) {
+                    var data = JSON.parse(req.responseText);
+                    geo.updateGeoData(data)
+                } else {
+                    console.log(req.status);
+                }
+            }
+
+            req.open("GET", url);
+            req.send();
+
+    }
+
     function error() {
-	  location.innerHTML = "Impossibile trovare la tua posizione";
+    location.innerHTML = "Impossibile trovare la tua posizione";
     }
 }
 
